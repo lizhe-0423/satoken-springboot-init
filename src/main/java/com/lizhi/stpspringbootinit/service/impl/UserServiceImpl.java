@@ -1,5 +1,6 @@
 package com.lizhi.stpspringbootinit.service.impl;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -22,11 +23,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import static com.lizhi.stpspringbootinit.constant.UserConstant.USER_LOGIN_STATE;
 import static com.sun.javafx.font.FontResource.SALT;
@@ -69,6 +68,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             // 2. 加密
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+//            String encryptPassword =SaSecureUtil.md5(userPassword);
             // 3. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);
