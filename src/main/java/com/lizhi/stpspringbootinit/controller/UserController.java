@@ -98,12 +98,17 @@ public class UserController {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
         // 限制爬虫
-        Validate.isTrue(size>20,"一次性获取太多了！(●'◡'●)");
-        Page<User> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
+        Validate.isTrue(size<20,"一次性获取太多了！(●'◡'●)");
+
+        Page<User> page = new Page<User>(current,size);
+        Page<User> userPage= userService.page(page, userService.getQueryWrapper(userQueryRequest));
+
         Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
         List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
         userVOPage.setRecords(userVO);
+
+
+
         return ResultUtils.success(userVOPage);
     }
 
