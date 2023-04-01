@@ -43,12 +43,6 @@ spring:
         max-idle: 10
         # 连接池中的最小空闲连接
         min-idle: 0
-  # Elasticsearch 配置
-  # todo 需替换配置，然后取消注释
-#  elasticsearch:
-#    uris: http://localhost:9200
-#    username: root
-#    password: 123456
   # 文件上传
   servlet:
     multipart:
@@ -117,22 +111,3 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: false
-
-# Sa-Token-Quick-Login 配置
-sa:
-  # 登录账号
-  name: sa
-  # 登录密码
-  pwd: 123456
-  # 是否自动随机生成账号密码 (此项为true时, name与pwd失效)
-  auto: false
-  # 是否开启全局认证(关闭后将不再强行拦截)
-  auth: true
-  # 登录页标题
-  title: 荔枝登录
-  # 是否显示底部版权信息
-  copr: true
-  # 指定拦截路径
-  # include: /**
-  # 指定排除路径
-  # exclude: /1.jpg

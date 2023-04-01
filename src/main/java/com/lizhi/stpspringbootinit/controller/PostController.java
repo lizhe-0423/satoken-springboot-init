@@ -88,11 +88,11 @@ public class PostController {
      * @return
      */
     @PostMapping("/delete")
+    @SaCheckRole(value = {"admin","user"},mode = SaMode.OR)
     public BaseResponse<Boolean> deletePost(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = (User) StpUtil.getSession().get(USER_LOGIN_STATE);;
         long id = deleteRequest.getId();
         // 判断是否存在
         Post oldPost = postService.getById(id);
@@ -100,10 +100,7 @@ public class PostController {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
 
-        // 仅本人或管理员可删除
-        if (!oldPost.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
+
         boolean b = postService.removeById(id);
         return ResultUtils.success(b);
     }
