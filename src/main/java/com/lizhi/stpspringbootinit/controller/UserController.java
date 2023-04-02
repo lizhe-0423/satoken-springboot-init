@@ -1,5 +1,6 @@
 package com.lizhi.stpspringbootinit.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.core.util.StrUtil;
@@ -31,7 +32,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import static com.lizhi.stpspringbootinit.constant.UserConstant.USER_LOGIN_STATE;
+import static com.lizhi.stpspringbootinit.constant.UserConstant.*;
 
 @RestController
 @RequestMapping("/user")
@@ -149,14 +150,33 @@ public class UserController {
      * @return
      */
     @PostMapping("/update")
+    @SaCheckRole(DEFAULT_ROLE)
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateMyRequest userUpdateRequest) {
+        if (userUpdateRequest == null ) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = (User) StpUtil.getSession().get(USER_LOGIN_STATE);
+        BeanUtils.copyProperties(userUpdateRequest, user);
+        boolean result = userService.updateById(user);
+        org.apache.commons.lang3.Validate.isTrue(result);
+        return ResultUtils.success(true);
+    }
+
+    /**
+     * 更新用户
+     *
+     * @param userUpdateRequest
+     * @param
+     * @return
+     */
+    @PostMapping("/admin/update")
+    @SaCheckRole(ADMIN_ROLE)
+    public BaseResponse<Boolean> AdminUpdateUser(@RequestBody UserUpdateMyRequest userUpdateRequest) {
         if (userUpdateRequest == null ) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = new User();
         BeanUtils.copyProperties(userUpdateRequest, user);
-        User loginUser = (User) StpUtil.getSession().get(USER_LOGIN_STATE);
-        user.setId(loginUser.getId());
         boolean result = userService.updateById(user);
         org.apache.commons.lang3.Validate.isTrue(result);
         return ResultUtils.success(true);
