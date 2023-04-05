@@ -19,6 +19,11 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="https://github.com/lizhe-0423">荔枝</a>
  * redis 操作
  * string:缓存结构体信息(用户信息、登录信息、token)、计数功能(统计点赞、粉丝、关注数量)
+ * list:异步队列(秒杀场景、库存销量)
+ * hash:缓存结构体(属性字段、单字段也可以进行计数)
+ * set:中奖id(去重)
+ * zset:可以用来存粉丝列表、关注列表等
+ *
  */
 @Component
 public class RedisUtil {
@@ -85,6 +90,31 @@ public class RedisUtil {
     public Long decr(String str,int nums){
         Long decrement = stringRedisTemplate.opsForValue().decrement(str, nums);
         return decrement;
+    }
+
+    /**
+     * 队列左出
+     * @param str1 key
+     */
+    public void queueLeftPop(String str1){
+        stringRedisTemplate.opsForList().leftPop(str1);
+    }
+
+    /**
+     * 队列右出
+     * @param str1 key
+     */
+    public void queueRightPop(String str1){
+        stringRedisTemplate.opsForList().rightPop(str1);
+    }
+
+    /**
+     * 队列左进
+     * @param str1 key
+     * @param obj value
+     */
+    public void queuePush(String str1,String obj){
+        stringRedisTemplate.opsForList().leftPush(str1,obj);
     }
 
 

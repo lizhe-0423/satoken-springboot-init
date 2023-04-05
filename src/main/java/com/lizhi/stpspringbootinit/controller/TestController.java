@@ -1,6 +1,7 @@
 package com.lizhi.stpspringbootinit.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import cn.hutool.core.util.RandomUtil;
 import com.lizhi.stpspringbootinit.util.RedisUtil;
 import com.lizhi.stpspringbootinit.util.TooQrCode;
 import io.swagger.annotations.Api;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -72,5 +74,23 @@ public class TestController {
         long decr = redisUtil.decr("1641766009775976450", 1);
         return decr;
     }
+
+    @RequestMapping("leftPop")
+    @ApiOperation("队列左出")
+    public void leftPop(){
+        redisUtil.queueLeftPop("队列");
+    }
+    @RequestMapping("rightPop")
+    @ApiOperation("队列右出")
+    public void rightPop(){
+        redisUtil.queueRightPop("队列");
+    }
+    @RequestMapping("push")
+    @ApiOperation("进队列")
+    public void push(){
+        String string = String.valueOf(RandomUtil.randomInt(1, 10000));
+        redisUtil.queuePush("队列",string);
+    }
+
 
 }
