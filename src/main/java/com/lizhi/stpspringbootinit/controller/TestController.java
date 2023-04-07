@@ -1,7 +1,9 @@
 package com.lizhi.stpspringbootinit.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.core.util.RandomUtil;
+import com.lizhi.stpspringbootinit.model.entity.User;
 import com.lizhi.stpspringbootinit.util.RedisUtil;
 import com.lizhi.stpspringbootinit.util.TooQrCode;
 import io.swagger.annotations.Api;
@@ -15,8 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static com.lizhi.stpspringbootinit.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * @author <a href="https://github.com/lizhe-0423">荔枝</a>
@@ -91,6 +98,38 @@ public class TestController {
         String string = String.valueOf(RandomUtil.randomInt(1, 10000));
         redisUtil.queuePush("队列",string);
     }
+
+    /**
+     * 添加字典
+     */
+    @RequestMapping("hashPush")
+    @ApiOperation("添加字典")
+    public void hashPush(){
+        redisUtil.hashPush("字典","用户","name:lizhi");
+        redisUtil.hashPush("字典","用户","phone:17749038218");
+        redisUtil.hashPush("字典","用户","address:山东省德州市陵城区荔枝小区");
+    }
+
+    @RequestMapping("setAdd")
+    @ApiOperation("添加集合元素")
+    public void setAdd(){
+        User loginUser = (User) StpUtil.getSession().get(USER_LOGIN_STATE);
+        long loginUserId = loginUser.getId();
+        redisUtil.setAddLong("id", String.valueOf(loginUserId));
+    }
+
+    @RequestMapping("zSetAdd")
+    @ApiOperation("添加z集合元素")
+    public void zSetAdd(){
+        User loginUser = (User) StpUtil.getSession().get(USER_LOGIN_STATE);
+        long loginUserId = loginUser.getId();
+        redisUtil.zSet("粉丝列表","10001",10);
+        redisUtil.zSet("粉丝列表","10002",20);
+        redisUtil.zSet("粉丝列表","10003",30);
+        redisUtil.zSet("粉丝列表","10004",40);
+
+    }
+
 
 
 }

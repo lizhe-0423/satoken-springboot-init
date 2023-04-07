@@ -1,5 +1,6 @@
 package com.lizhi.stpspringbootinit.util;
 
+import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.poi.ss.formula.functions.T;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +30,9 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class RedisUtil {
+
+
+
 
     @Resource
     RedisTemplate<String,Object> stringRedisTemplate;
@@ -117,6 +123,51 @@ public class RedisUtil {
         stringRedisTemplate.opsForList().leftPush(str1,obj);
     }
 
+
+    /**
+     * 添加字典
+     * @param key key
+     * @param hash hash
+     * @param hashV hash value
+     */
+    public void hashPush(String key,String hash,String hashV){
+        stringRedisTemplate.opsForHash().put(key,hash,hashV);
+    }
+
+    /**
+     * 字典删除
+     * @param str key
+     * @param str2 hash
+     */
+    public void hashDel(String str,String str2){
+        if(str2.isEmpty()){
+            stringRedisTemplate.opsForHash().delete(str);
+        }
+        else {
+            stringRedisTemplate.opsForHash().delete(str, str2);
+        }
+    }
+
+    /**
+     * set 添加
+     * @param str key
+     * @param nums value(唯一)
+     */
+    public void setAddLong(String str,String nums){
+        stringRedisTemplate.opsForSet().add(str,nums);
+    }
+
+    public void zSet(String str, String value,double score){
+        stringRedisTemplate.opsForZSet().add(str,value,score);
+    }
+
+    /**
+     * 区间排序
+     * @param str key
+     */
+    public void zSetIncr(String str,int start,int end){
+        stringRedisTemplate.opsForZSet().range(str,start,end);
+    }
 
 
 }
